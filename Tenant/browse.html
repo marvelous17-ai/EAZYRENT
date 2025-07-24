@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Browse Properties | RentEasy</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <nav>
+      <div class="logo">🏠 RentEasy</div>
+      <ul class="nav-links">
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Search/Filter Form -->
+<section class="search-filter">
+  <input type="text" id="searchLocation" placeholder="Search by location..." />
+  <select id="typeFilter">
+    <option value="">All Types</option>
+    <option value="Room">Room</option>
+    <option value="Self Contain">Self Contain</option>
+    <option value="Flat">Flat</option>
+    <option value="Duplex">Duplex</option>
+  </select>
+  <input type="number" id="maxPrice" placeholder="Max Price (₦)" />
+  <button onclick="filterProperties()">Search</button>
+  <button onclick="cancelSearch()" class="cancel-btn">Cancel</button> <!-- ✅ new button -->
+</section>
+
+
+  <!-- Where filtered results will show -->
+   <div id="loadingMessage" class="hidden">Loading...</div>
+  <section id="propertyResults" class="property-list"></section>
+
+  <!-- JavaScript file -->
+  <script src="../js/browse.js"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Property | RentEasy</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <header>
+    <nav>
+      <div class="logo">🏠 RentEasy</div>
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="#" id="logoutBtn">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="form-section">
+    <div class="form-box">
+      <h2>Edit Property</h2>
+      <form id="editPropertyForm">
+        <input type="hidden" id="editId" />
+
+        <label>Title:</label>
+        <input type="text" id="editTitle" required />
+
+        <label>Location:</label>
+        <input type="text" id="editLocation" required />
+
+        <label>Price (₦):</label>
+        <input type="number" id="editPrice" required />
+
+        <label>Type:</label>
+        <select id="editType" required>
+          <option value="1-bedroom">1 Bedroom</option>
+          <option value="2-bedroom">2 Bedroom</option>
+          <option value="self-con">Self Contain</option>
+        </select>
+
+        <label>Description:</label>
+        <textarea id="editDescription" rows="4"></textarea>
+
+        <label>Image URL:</label>
+        <input type="text" id="editImage" />
+
+        <button type="submit">Save Changes</button>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    if (!user || user.role !== "landlord") {
+      alert("Access denied. Please log in as a landlord.");
+      window.location.href = "../login.html";
+    }
+
+    const propertyId = localStorage.getItem("editPropertyId");
+    const allProperties = JSON.parse(localStorage.getItem("properties")) || [];
+    const editForm = document.getElementById("editPropertyForm");
+
+    const property = allProperties.find(p => p.id == propertyId);
+    if (!property) {
+      alert("Property not found.");
+      window.location.href = "dashboard.html";
+    }
+
+    document.getElementById("editId").value = property.id;
+    document.getElementById("editTitle").value = property.title;
+    document.getElementById("editLocation").value = property.location;
+    document.getElementById("editPrice").value = property.price;
+    document.getElementById("editType").value = property.type;
+    document.getElementById("editDescription").value = property.description;
+    document.getElementById("editImage").value = property.image;
+
+    editForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const index = allProperties.findIndex(p => p.id == propertyId);
+      if (index === -1) return;
+
+      allProperties[index] = {
+        ...allProperties[index],
+        title: document.getElementById("editTitle").value,
+        location: document.getElementById("editLocation").value,
+        price: document.getElementById("editPrice").value,
+        type: document.getElementById("editType").value,
+        description: document.getElementById("editDescription").value,
+        image: document.getElementById("editImage").value,
+      };
+
+      localStorage.setItem("properties", JSON.stringify(allProperties));
+      alert("Property updated successfully!");
+      window.location.href = "dashboard.html";
+    });
+  </script>
+</body>
+</html>

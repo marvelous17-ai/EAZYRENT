@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Landlord Dashboard | RentEasy</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <!-- Dashboard Header -->
+  <header>
+    <nav>
+      <div class="logo">🏠 RentEasy</div>
+      <ul class="nav-links">
+        <li><a href="#" id="welcomeUser">Welcome, Landlord</a></li>
+        <li><a href="#" id="logoutBtn">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Dashboard -->
+  <section class="dashboard-container">
+    <h2>Landlord Dashboard</h2>
+
+    <!-- Add Property Button -->
+    <div class="add-property">
+      <a href="add-property.html" class="btn">➕ Add New Property</a>
+    </div>
+
+    <!-- Your Properties -->
+    <div class="dashboard-search">
+      <h3>Your Listed Properties</h3>
+    </div>
+
+    <div class="property-list" id="propertyList"></div>
+
+
+    <!-- Tenant Messages -->
+    <div class="chat-preview">
+  <h3>Messages from Tenants</h3>
+  <div id="chatMessages"></div>
+</div>
+
+
+  </section>
+
+  <!-- 🔐 Role check + Logout -->
+  <script>
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  const propertyList = document.getElementById("propertyList");
+
+  if (!user || user.role !== "landlord") {
+    alert("Access denied. Please log in as a landlord.");
+    window.location.href = "../login.html";
+  }
+
+  function loadLandlordProperties() {
+    const allProperties = JSON.parse(localStorage.getItem("properties")) || [];
+    const landlordProperties = allProperties.filter(
+      (prop) => prop.landlordEmail === user.email
+    );
+
+    if (landlordProperties.length === 0) {
+      propertyList.innerHTML = "<p>You have not added any properties yet.</p>";
+      return;
+    }
+
+    landlordProperties.forEach((prop) => {
+      const card = document.createElement("div");
+      card.className = "property-card";
+      card.innerHTML = `
+        <img src="${prop.image || '../img/placeholder.jpg'}" alt="Property Image" />
+        <h3>${prop.title}</h3>
+        <p>📍 ${prop.location}</p>
+        <p>₦${prop.price} / year</p>
+        <p>${prop.type}</p>
+        <p>${prop.description}</p>
+       <a href="edit-property.html" onclick="editProperty('${prop.id}')">Edit Listing</a>
+      `;
+      propertyList.appendChild(card);
+    });
+  }
+
+  loadLandlordProperties();
+
+  function loadMessages() {
+  const messages = JSON.parse(localStorage.getItem("messages")) || [];
+  const chatContainer = document.getElementById("chatMessages");
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+
+  const incoming = messages.filter(msg => msg.to === user.email);
+  if (incoming.length === 0) {
+    chatContainer.innerHTML = "<p>No messages yet.</p>";
+    return;
+  }
+
+  chatContainer.innerHTML = incoming.map(msg => `
+    <div class="chat-card">
+      <strong>${msg.from}:</strong> ${msg.text}
+      <div><small>${msg.time}</small></div>
+    </div>
+  `).join("");
+}
+
+loadMessages();
+
+  function editProperty(id) {
+  localStorage.setItem("editPropertyId", id);
+}
+
+</script>
+
+
+</body>
+</html>

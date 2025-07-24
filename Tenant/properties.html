@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Browse Properties | RentEasy</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <nav>
+      <div class="logo">🏠 RentEasy</div>
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="#">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Property Listings -->
+  <section class="property-listings">
+    <h2>Available Properties</h2>
+    <div class="property-list" id="propertyList">
+      <!-- Properties will be injected here by JS -->
+    </div>
+  </section>
+
+  <script>
+    const propertyList = document.getElementById("propertyList");
+
+    // Get saved properties from localStorage
+    const properties = JSON.parse(localStorage.getItem("properties")) || [];
+
+    if (properties.length === 0) {
+      propertyList.innerHTML = "<p>No properties found.</p>";
+    } else {
+      properties.forEach((property) => {
+        const card = document.createElement("div");
+        card.className = "property-card";
+
+        card.innerHTML = `
+          <h3>${property.title}</h3>
+          <p><strong>Location:</strong> ${property.location}</p>
+          <p><strong>Price:</strong> ₦${property.price}</p>
+          <p><strong>Type:</strong> ${property.type}</p>
+          <p>${property.description}</p>
+          <button>Contact Landlord</button>
+        `;
+
+        propertyList.appendChild(card);
+      });
+    }
+  </script>
+
+</body>
+</html>

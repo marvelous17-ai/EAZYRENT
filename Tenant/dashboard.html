@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tenant Dashboard | RentEasy</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <!-- Dashboard Header -->
+  <header>
+    <nav>
+      <div class="logo">🏠 RentEasy</div>
+      <ul class="nav-links">
+        <li><a href="#" id="welcomeUser">Welcome, Tenant</a></li>
+        <li><a href="#" id="logoutBtn">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Dashboard -->
+  <section class="dashboard-container">
+    <h2>Your Dashboard</h2>
+
+    <!-- Property Search Area -->
+    <div class="dashboard-search">
+      <h3>Search Available Properties</h3>
+      <div class="search-box">
+        <input type="text" placeholder="Location..." />
+        <select>
+          <option value="">Property Type</option>
+          <option value="1-bedroom">1 Bedroom</option>
+          <option value="2-bedroom">2 Bedroom</option>
+          <option value="self-con">Self Contain</option>
+        </select>
+        <input type="number" placeholder="Max Price (₦)" />
+        <button>Search</button>
+      </div>
+    </div>
+
+    <!-- Property Listings (sample) -->
+    <div class="property-list">
+      <div class="property-card">
+        <img src="../img/sample1.jpg" alt="Property Image" />
+        <h3>Mini Flat - Lekki</h3>
+        <p>₦350,000 / year</p>
+        <a href="#">View</a>
+      </div>
+      <div class="property-card">
+        <img src="../img/sample2.jpg" alt="Property Image" />
+        <h3>2 Bedroom - Ikeja</h3>
+        <p>₦550,000 / year</p>
+       <button onclick="sendMessage('${prop.landlordEmail}')">Message</button>
+      </div>
+    </div>
+
+    <!-- Message Section (Preview) -->
+    <div class="chat-preview">
+      <h3>Recent Messages</h3>
+      <div class="chat-card">
+        <strong>Landlord A:</strong> Please let me know when you want to visit.
+      </div>
+      <div class="chat-card">
+        <strong>Landlord B:</strong> I’ve updated the price to ₦300,000.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ✅ Auth + Logout Script -->
+  <script>
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  const propertyList = document.querySelector(".property-list");
+
+  if (!user || user.role !== "tenant") {
+    alert("Access denied. Please log in as a tenant.");
+    window.location.href = "../login.html";
+  }
+
+  function displayProperties(properties) {
+    propertyList.innerHTML = "";
+
+    if (properties.length === 0) {
+      propertyList.innerHTML = "<p>No properties available at the moment.</p>";
+      return;
+    }
+
+    properties.forEach((prop) => {
+      const card = document.createElement("div");
+      card.className = "property-card";
+      card.innerHTML = `
+        <img src="${prop.image || '../img/placeholder.jpg'}" alt="Property Image" />
+        <h3>${prop.title}</h3>
+        <p>📍 ${prop.location}</p>
+        <p>₦${prop.price} / year</p>
+        <p>${prop.type}</p>
+        <a href="#">Message Landlord</a>
+      `;
+      propertyList.appendChild(card);
+    });
+  }
+
+  function sendMessage(landlordEmail) {
+  const message = prompt("Enter your message:");
+  if (!message) return;
+
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  const messages = JSON.parse(localStorage.getItem("messages")) || [];
+
+  messages.push({
+    from: user.email,
+    to: landlordEmail,
+    text: message,
+    time: new Date().toLocaleString()
+  });
+
+  localStorage.setItem("messages", JSON.stringify(messages));
+  alert("Message sent!");
+}
+
+  const allProperties = JSON.parse(localStorage.getItem("properties")) || [];
+  displayProperties(allProperties);
+</script>
+
+
+</body>
+</html>
