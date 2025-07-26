@@ -22,7 +22,7 @@ loginForm.addEventListener("submit", function (e) {
 
   // Redirect based on role
   if (user.role === "tenant") {
-    window.location.href = "tenant/dashboard.html";
+    window.location.href = "Tenant/browse.html";
   } else if (user.role === "landlord") {
     window.location.href = "landlord/dashboard.html";
   }
